@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EU AI Act - Unterrichtsstunde für KI-Anfänger</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .lesson-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .lesson-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: linear-gradient(45deg, #2c3e50, #4a6741);
+            color: white;
+            padding: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .card-header h2 {
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .card-content {
+            padding: 20px;
+            display: none;
+        }
+        
+        .card-content.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .time-badge {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .risk-levels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .risk-card {
+            border-left: 5px solid;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .risk-unacceptable { border-left-color: #dc3545; }
+        .risk-high { border-left-color: #fd7e14; }
+        .risk-limited { border-left-color: #ffc107; }
+        .risk-minimal { border-left-color: #28a745; }
+        
+        .activity-box {
+            background: #e8f4fd;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .activity-box h4 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        
+        .quiz-container {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .quiz-question {
+            margin-bottom: 15px;
+        }
+        
+        .quiz-options {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .quiz-options li {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .quiz-options li:hover {
+            background: #f0f8ff;
+            border-color: #007bff;
+        }
+        
+        .quiz-options li.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .quiz-options li.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        
+        .resources {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .resources h3 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+        
+        .resources ul {
+            list-style-type: none;
+        }
+        
+        .resources li {
+            padding: 5px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .resources a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        
+        .resources a:hover {
+            text-decoration: underline;
+        }
+        
+        .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .toggle-icon.rotated {
+            transform: rotate(180deg);
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 EU AI Act - Unterrichtsstunde</h1>
+            <p>Für KI-Anfänger | Dauer: 90 Minuten</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+        </div>
+        
+        <!-- Einstieg -->
+        <div class="lesson-card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2>
+                    🎯 Einstieg & Motivation
+                    <span class="time-badge">10 Min</span>
+                    <span class="toggle-icon">▼</span>
+                </h2>
+            </div>
+            <div class="card-content">
+                <div class="highlight">
+                    <strong>Lernziel:</strong> Die Teilnehmer verstehen, warum KI-Regulierung wichtig ist und was der EU AI Act bewirken soll.
+                </div>
+                
+                <div class="activity-box">
+                    <h4>🗣️ Einstiegsfrage (5 Min)</h4>
+                    <p><strong>Frage an die Gruppe:</strong> "Welche KI-Anwendungen nutzen Sie bereits im Alltag, und welche Sorgen haben Sie dabei?"</p>
+                    <p><strong>Sammlung:</strong> Antworten an der Tafel/Flipchart sammeln</p>
+                </div>
+                
+                <h3>Warum brauchen wir den EU AI Act?</h3>
+                <ul>
+                    <li>KI wird immer mächtiger und allgegenwärtiger</li>
+                    <li>Potenzial für Diskriminierung und Überwachung</li>
+                    <li>Schutz der Grundrechte und Demokratie</li>
+                    <li>Rechtssicherheit für Unternehmen</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Grundlagen -->
+        <div class="lesson-card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2>
+                    📚 Was ist der EU AI Act?
+                    <span class="time-badge">15 Min</span>
+                    <span class="toggle-icon">▼</span>
+                </h2>
+            </div>
+            <div class="card-content">
+                <div class="highlight">
+                    <strong>Kernfakten:</strong> Der EU AI Act ist das weltweit erste umfassende Gesetz zur Regulierung Künstlicher Intelligenz.
+                </div>
+                
+                <h3>Wichtige Eckdaten:</h3>
+                <ul>
+                    <li><strong>Verabschiedet:</strong> 2024</li>
+                    <li><strong>Gilt ab:</strong> 2025/2026 (gestaffelt)</li>
+                    <li><strong>Geltungsbereich:</strong> EU + Unternehmen, die KI in der EU anbieten</li>
+                    <li><strong>Ansatz:</strong> Risikobasierte Regulierung</li>
+                </ul>
+                
+                <div class="activity-box">
+                    <h4>💡 Verständnischeck (5 Min)</h4>
+                    <p>Diskussion in Kleingruppen: "Was verstehen Sie unter 'risikobasierter Regulierung'?"</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Risikoklassen -->
+        <div class="lesson-card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2>
+                    ⚠️ Die 4 Risikoklassen
+                    <span class="time-badge">20 Min</span>
+                    <span class="toggle-icon">▼</span>
+                </h2>
+            </div>
+            <div class="card-content">
+                <div class="risk-levels">
+                    <div class="risk-card risk-unacceptable">
+                        <h4>🚫 Unzulässiges Risiko</h4>
+                        <p><strong>Regelung:</strong> Komplett verboten</p>
+                        <p><strong>Beispiele:</strong></p>
+                        <ul>
+                            <li>Social Scoring (wie in China)</li>
+                            <li>Emotionserkennung am Arbeitsplatz</li>
+                            <li>Manipulation von Verhalten</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="risk-card risk-high">
+                        <h4>🔴 Hohes Risiko</h4>
+                        <p><strong>Regelung:</strong> Strenge Auflagen</p>
+                        <p><strong>Beispiele:</strong></p>
+                        <ul>
+                            <li>Bewerbungsauswahl-KI</li>
+                            <li>Kreditvergabe-Algorithmen</li>
+                            <li>Medizinische Diagnose-KI</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="risk-card risk-limited">
+                        <h4>🟡 Begrenztes Risiko</h4>
+                        <p><strong>Regelung:</strong> Transparenzpflichten</p>
+                        <p><strong>Beispiele:</strong></p>
+                        <ul>
+                            <li>Chatbots</li>
+                            <li>Deepfakes</li>
+                            <li>Emotionserkennung</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="risk-card risk-minimal">
+                        <h4>🟢 Minimales Risiko</h4>
+                        <p><strong>Regelung:</strong> Keine besonderen Pflichten</p>
+                        <p><strong>Beispiele:</strong></p>
+                        <ul>
+                            <li>Spam-Filter</li>
+                            <li>Spielereien</li>
+                            <li>Einfache Empfehlungssysteme</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="activity-box">
+                    <h4>🎯 Gruppenaktivität: KI-Systeme einordnen (10 Min)</h4>
+                    <p>Ordnen Sie folgende KI-Systeme den Risikoklassen zu:</p>
+                    <ul>
+                        <li>Netflix-Empfehlungen</li>
+                        <li>Gesichtserkennung an Flughäfen</li>
+                        <li>Alexa/Siri</li>
+                        <li>Autonome Autos</li>
+                        <li>KI-gestützte Krebsdiagnose</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Praktische Auswirkungen -->
+        <div class="lesson-card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2>
+                    🏢 Praktische Auswirkungen
+                    <span class="time-badge">20 Min</span>
+                    <span class="toggle-icon">▼</span>
+                </h2>
+            </div>
+            <div class="card-content">
+                <h3>Für Unternehmen:</h3>
+                <ul>
+                    <li><strong>Compliance-Kosten:</strong> Neue Abteilungen und Prozesse nötig</li>
+                    <li><strong>Dokumentationspflichten:</strong> Lückenlose Nachverfolgung</li>
+                    <li><strong>Risikobewertungen:</strong> Vor jedem KI-Einsatz</li>
+                    <li><strong>Strafen:</strong> Bis zu 7% des Jahresumsatzes</li>
+                </ul>
+                
+                <h3>Für Bürger:</h3>
+                <ul>
+                    <li><strong>Transparenz:</strong> Recht zu wissen, wenn KI verwendet wird</li>
+                    <li><strong>Menschliche Kontrolle:</strong> Recht auf menschliche Entscheidung</li>
+                    <li><strong>Beschwerdemöglichkeiten:</strong> Bei unfairen KI-Entscheidungen</li>
+                    <li><strong>Datenschutz:</strong> Verstärkter Schutz biometrischer Daten</li>
+                </ul>
+                
+                <div class="activity-box">
+                    <h4>💼 Fallstudie (15 Min)</h4>
+                    <p><strong>Szenario:</strong> Ein Online-Shop will KI für Preisgestaltung einsetzen. Die KI soll Preise basierend auf Kundenverhalten anpassen.</p>
+                    <p><strong>Aufgabe:</strong> Welche AI Act-Bestimmungen sind relevant? Welche Maßnahmen muss das Unternehmen treffen?</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quiz -->
+        <div class="lesson-card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2>
+                    🧠 Wissenstest
+                    <span class="time-badge">15 Min</span>
+                    <span class="toggle-icon">▼</span>
+                </h2>
+            </div>
+            <div class="card-content">
+                <div class="quiz-container">
+                    <div class="quiz-question">
+                        <h4>Frage 1: Welche Risikoklasse hat ein Chatbot für Kundenservice?</h4>
+                        <ul class="quiz-options" data-correct="2">
+                            <li onclick="selectAnswer(this, 1)">Unzulässiges Risiko</li>
+                            <li onclick="selectAnswer(this, 2)">Begrenztes Risiko</li>
+                            <li onclick="selectAnswer(this, 3)">Hohes Risiko</li>
+                            <li onclick="selectAnswer(this, 4)">Minimales Risiko</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="quiz-question">
+                        <h4>Frage 2: Was ist bei KI-Systemen mit hohem Risiko erforderlich?</h4>
+                        <ul class="quiz-options" data-correct="1">
+                            <li onclick="selectAnswer(this, 1)">Strenge Auflagen und Zertifizierung</li>
+                            <li onclick="selectAnswer(this, 2)">Komplettes Verbot</li>
+                            <li onclick="selectAnswer(this, 3)">Nur Transparenzpflichten</li>
+                            <li onclick="selectAnswer(this, 4)">Keine besonderen Maßnahmen</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="quiz-question">
+                        <h4>Frage 3: Ab wann gilt der EU AI Act vollständig?</h4>
+                        <ul class="quiz-options" data-correct="3">
+                            <li onclick="selectAnswer(this, 1)">Sofort</li>
+                            <li onclick="selectAnswer(this, 2)">2024</li>
+                            <li onclick="selectAnswer(this, 3)">2025/2026 gestaffelt</li>
+                            <li onclick="selectAnswer(this, 4)">2030</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Diskussion & Ausblick -->
+        <div class="lesson-card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2>
+                    💬 Diskussion & Ausblick
+                    <span class="time-badge">10 Min</span>
+                    <span class="toggle-icon">▼</span>
+                </h2>
+            </div>
+            <div class="card-content">
+                <div class="activity-box">
+                    <h4>🗣️ Abschlussdiskussion</h4>
+                    <p><strong>Diskussionsfragen:</strong></p>
+                    <ul>
+                        <li>Ist der EU AI Act zu streng oder zu lasch?</li>
+                        <li>Wie wird sich KI-Entwicklung in Europa ändern?</li>
+                        <li>Welche Auswirkungen erwarten Sie in Ihrem Berufsfeld?</li>
+                    </ul>
+                </div>
+                
+                <h3>Nächste Schritte:</h3>
+                <ul>
+                    <li>Verfolgen Sie die Umsetzung in den kommenden Monaten</li>
+                    <li>Informieren Sie sich über branchenspezifische Auswirkungen</li>
+                    <li>Beteiligen Sie sich an der gesellschaftlichen Diskussion</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Ressourcen -->
+        <div class="resources">
+            <h3>📚 Weiterführende Ressourcen</h3>
+            <ul>
+                <li><strong>Offizieller Text:</strong> EUR-Lex - Artificial Intelligence Act</li>
+                <li><strong>Zusammenfassung:</strong> EU-Kommission AI Act Factsheet</li>
+                <li><strong>Praktische Hilfen:</strong> AI Act Compliance Checker</li>
+                <li><strong>News:</strong> AI Act Updates auf europa.eu</li>
+                <li><strong>Community:</strong> AI Ethics Forums und Diskussionsgruppen</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        let completedSections = 0;
+        const totalSections = 6;
+        
+        function toggleCard(header) {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                icon.classList.remove('rotated');
+            } else {
+                content.classList.add('active');
+                icon.classList.add('rotated');
+                updateProgress();
+            }
+        }
+        
+        function updateProgress() {
+            completedSections++;
+            const progressPercent = (completedSections / totalSections) * 100;
+            document.getElementById('progressBar').style.width = progressPercent + '%';
+        }
+        
+        function selectAnswer(element, selectedAnswer) {
+            const options = element.parentElement;
+            const correctAnswer = parseInt(options.dataset.correct);
+            
+            // Remove previous selections
+            options.querySelectorAll('li').forEach(li => {
+                li.classList.remove('correct', 'wrong');
+            });
+            
+            // Show correct answer
+            options.children[correctAnswer - 1].classList.add('correct');
+            
+            // Mark selected answer if wrong
+            if (selectedAnswer !== correctAnswer) {
+                element.classList.add('wrong');
+            }
+        }
+        
+        // Auto-open first section
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstCard = document.querySelector('.lesson-card .card-header');
+            toggleCard(firstCard);
+        });
+    </script>
+</body>
+</html>
+
